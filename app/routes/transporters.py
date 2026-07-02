@@ -2,20 +2,27 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required
 from app import db
 from app.models import Transporter
-from app.utils import validate_positive, log_audit
+from app.utils import log_audit
 
 transporters_bp = Blueprint("transporters", __name__, url_prefix="/transporters")
+PER_PAGE = 20
 
 
 @transporters_bp.route("/")
 @login_required
 def list():
+    page = request.args.get("page", 1, type=int)
     query = Transporter.query
     search = request.args.get("search", "")
     if search:
         query = query.filter(Transporter.name.ilike(f"%{search}%"))
-    transporters = query.order_by(Transporter.name).all()
-    return render_template("transporters/list.html", transporters=transporters, search=search)
+    pagination = query.order_by(Transporter.name).paginate(page=page, per_page=PER_PAGE, error_out=False)
+    return render_template(
+        "transporters/list.html",
+        transporters=pagination.items,
+        pagination=pagination,
+        search=search,
+    )
 
 
 @transporters_bp.route("/add", methods=["GET", "POST"])

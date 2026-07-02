@@ -6,11 +6,13 @@ from app.models import Trip, Transporter
 from app.utils import validate_positive, log_audit
 
 trips_bp = Blueprint("trips", __name__, url_prefix="/trips")
+PER_PAGE = 20
 
 
 @trips_bp.route("/")
 @login_required
 def list():
+    page = request.args.get("page", 1, type=int)
     query = Trip.query
     date_from = request.args.get("date_from", "")
     date_to = request.args.get("date_to", "")
@@ -24,10 +26,11 @@ def list():
         query = query.filter(Trip.lorry_number.ilike(f"%{lorry}%"))
     if status:
         query = query.filter(Trip.status == status)
-    trips = query.order_by(Trip.date.desc()).all()
+    pagination = query.order_by(Trip.date.desc()).paginate(page=page, per_page=PER_PAGE, error_out=False)
     return render_template(
         "trips/list.html",
-        trips=trips,
+        trips=pagination.items,
+        pagination=pagination,
         date_from=date_from,
         date_to=date_to,
         lorry=lorry,
