@@ -40,6 +40,9 @@ def create_app():
     app.register_blueprint(main_bp)
 
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception:
+            pass
 
     return app
