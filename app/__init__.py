@@ -1,4 +1,5 @@
-from flask import Flask
+from urllib.parse import urlencode
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -38,6 +39,14 @@ def create_app():
     app.register_blueprint(payments_bp)
     app.register_blueprint(reports_bp)
     app.register_blueprint(main_bp)
+
+    @app.context_processor
+    def inject_helpers():
+        def page_url(page):
+            args = request.args.copy()
+            args["page"] = page
+            return urlencode(args)
+        return dict(page_url=page_url)
 
     with app.app_context():
         try:
