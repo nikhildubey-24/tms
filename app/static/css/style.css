@@ -379,6 +379,16 @@ body::before {
 }
 
 /* ── Page Header ── */
+.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+.section-title i { color: var(--primary); font-size: 1.1rem; }
 .page-header { margin-bottom: 1.5rem; }
 .page-header h3 {
     font-weight: 800;
