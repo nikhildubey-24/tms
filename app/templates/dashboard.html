@@ -39,75 +39,57 @@
 {% if plant_data %}
 <div class="section-title"><i class="bi bi-building"></i> Plant-wise Summary</div>
 <div class="row g-3 mb-4">
-    <div class="col-lg-8">
-        <div class="row g-3">
-            {% for pd in plant_data %}
-            <div class="col-xl-6 col-md-6">
-                <div class="card h-100">
-                    <div class="card-header d-flex align-items-center gap-2">
-                        <i class="bi bi-building"></i> {{ pd.name }}
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span style="font-size:.78rem;color:var(--text-muted);">Trips</span>
-                            <strong>{{ pd.count }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span style="font-size:.78rem;color:var(--text-muted);">Work Orders</span>
-                            <strong>{{ pd.work_orders }} / {{ pd.count }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span style="font-size:.78rem;color:var(--text-muted);">Mines Qty</span>
-                            <strong>{{ "%.2f"|format(pd.mines_qty) }} T</strong>
-                        </div>
-                        <hr style="margin:.5rem 0;opacity:.15;">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span style="font-size:.78rem;color:var(--text-muted);">Freight</span>
-                            <strong style="color:var(--primary);">&#8377; {{ "%.2f"|format(pd.freight) }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span style="font-size:.78rem;color:var(--text-muted);">TDS</span>
-                            <strong style="color:var(--secondary);">&#8377; {{ "%.2f"|format(pd.tds) }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span style="font-size:.78rem;color:var(--text-muted);">Expense</span>
-                            <strong style="color:var(--danger);">&#8377; {{ "%.2f"|format(pd.expense) }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span style="font-size:.78rem;color:var(--text-muted);">Paid</span>
-                            <strong style="color:var(--success);">&#8377; {{ "%.2f"|format(pd.paid) }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span style="font-size:.78rem;color:var(--text-muted);">Balance</span>
-                            <strong style="color:var(--warning);">&#8377; {{ "%.2f"|format(pd.balance) }}</strong>
-                        </div>
-                        <hr style="margin:.5rem 0;opacity:.15;">
-                        <div class="d-flex justify-content-between">
-                            <span style="font-size:.78rem;color:var(--text-muted);">Pending</span>
-                            <span class="badge-status {{ 'pending' if pd.pending > 0 else 'completed' }}">
-                                {{ pd.pending }}
-                            </span>
-                        </div>
-                    </div>
+    {% for pd in plant_data %}
+    <div class="col-xl-4 col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-building"></i> {{ pd.name }}
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Trips</span>
+                    <strong>{{ pd.count }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Work Orders</span>
+                    <strong>{{ pd.work_orders }} / {{ pd.count }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Mines Qty</span>
+                    <strong>{{ "%.2f"|format(pd.mines_qty) }} T</strong>
+                </div>
+                <hr style="margin:.5rem 0;opacity:.15;">
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Freight</span>
+                    <strong style="color:var(--primary);">&#8377; {{ "%.2f"|format(pd.freight) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">TDS</span>
+                    <strong style="color:var(--secondary);">&#8377; {{ "%.2f"|format(pd.tds) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Expense</span>
+                    <strong style="color:var(--danger);">&#8377; {{ "%.2f"|format(pd.expense) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Paid</span>
+                    <strong style="color:var(--success);">&#8377; {{ "%.2f"|format(pd.paid) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Balance</span>
+                    <strong style="color:var(--warning);">&#8377; {{ "%.2f"|format(pd.balance) }}</strong>
+                </div>
+                <hr style="margin:.5rem 0;opacity:.15;">
+                <div class="d-flex justify-content-between">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Pending</span>
+                    <span class="badge-status {{ 'pending' if pd.pending > 0 else 'completed' }}">
+                        {{ pd.pending }}
+                    </span>
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="card h-100">
-            <div class="card-header"><i class="bi bi-bar-chart"></i> Freight by Plant</div>
-            <div class="card-body" style="position:relative;">
-                <canvas id="freightChart" height="200"></canvas>
-            </div>
-        </div>
-        <div class="card h-100 mt-3">
-            <div class="card-header"><i class="bi bi-pie-chart"></i> Paid vs Balance</div>
-            <div class="card-body" style="position:relative;">
-                <canvas id="balanceChart" height="180"></canvas>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 {% endif %}
 
@@ -176,95 +158,4 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-var plantData = {{ plant_data | tojson | safe }};
-
-if (plantData && plantData.length) {
-    var names = plantData.map(function(p) { return p.name; });
-    var freights = plantData.map(function(p) { return p.freight; });
-    var paid = plantData.map(function(p) { return p.paid; });
-    var balances = plantData.map(function(p) { return p.balance; });
-
-    var rootStyle = getComputedStyle(document.documentElement);
-    var primary = rootStyle.getPropertyValue('--primary').trim() || '#2563EB';
-    var success = rootStyle.getPropertyValue('--success').trim() || '#10B981';
-    var warning = rootStyle.getPropertyValue('--warning').trim() || '#F59E0B';
-    var textMuted = rootStyle.getPropertyValue('--text-muted').trim() || '#94A3B8';
-    var font = "'Plus Jakarta Sans', sans-serif";
-
-    new Chart(document.getElementById('freightChart'), {
-        type: 'bar',
-        data: {
-            labels: names,
-            datasets: [{
-                label: 'Freight',
-                data: freights,
-                backgroundColor: plantData.map(function(_, i) {
-                    var colors = [primary, success, warning, '#6366F1', '#EC4899', '#8B5CF6'];
-                    return colors[i % colors.length] + '33';
-                }),
-                borderColor: plantData.map(function(_, i) {
-                    var colors = [primary, success, warning, '#6366F1', '#EC4899', '#8B5CF6'];
-                    return colors[i % colors.length];
-                }),
-                borderWidth: 2,
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { font: { family: font, size: 10 }, color: textMuted, callback: function(v) { return '₹' + v.toLocaleString(); } },
-                    grid: { color: textMuted + '22' }
-                },
-                x: {
-                    ticks: { font: { family: font, size: 10 }, color: textMuted }
-                }
-            }
-        }
-    });
-
-    var totalPaid = paid.reduce(function(a, b) { return a + b; }, 0);
-    var totalBalance = balances.reduce(function(a, b) { return a + b; }, 0);
-
-    new Chart(document.getElementById('balanceChart'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Paid', 'Balance'],
-            datasets: [{
-                data: [totalPaid, totalBalance],
-                backgroundColor: [success + 'BB', warning + 'BB'],
-                borderColor: [success, warning],
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { font: { family: font, size: 11 }, color: textMuted, padding: 12 }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(ctx) {
-                            return '₹ ' + ctx.parsed.toLocaleString();
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-</script>
 {% endblock %}
