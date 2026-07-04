@@ -36,9 +36,60 @@
     </div>
 </div>
 
+{% if plant_data %}
+<div class="section-title"><i class="bi bi-building"></i> Plant-wise Summary</div>
+<div class="plant-scroll-wrap mb-4">
+    {% for pd in plant_data %}
+    <div class="plant-scroll-card">
+        <div class="psc-header">{{ pd.name }}</div>
+        <div class="psc-body">
+            <div class="psc-row">
+                <span>Trips</span>
+                <strong>{{ pd.count }}</strong>
+            </div>
+            <div class="psc-row">
+                <span>Work Orders</span>
+                <strong>{{ pd.work_orders }} / {{ pd.count }}</strong>
+            </div>
+            <div class="psc-row">
+                <span>Mines Qty</span>
+                <strong>{{ "%.1f"|format(pd.mines_qty) }} T</strong>
+            </div>
+            <hr style="margin:.4rem 0;opacity:.12;">
+            <div class="psc-row">
+                <span>Freight</span>
+                <strong style="color:var(--primary);">&#8377; {{ "%.0f"|format(pd.freight) }}</strong>
+            </div>
+            <div class="psc-row">
+                <span>TDS</span>
+                <strong style="color:var(--secondary);">&#8377; {{ "%.0f"|format(pd.tds) }}</strong>
+            </div>
+            <div class="psc-row">
+                <span>Expense</span>
+                <strong style="color:var(--danger);">&#8377; {{ "%.0f"|format(pd.expense) }}</strong>
+            </div>
+            <div class="psc-row">
+                <span>Paid</span>
+                <strong style="color:var(--success);">&#8377; {{ "%.0f"|format(pd.paid) }}</strong>
+            </div>
+            <div class="psc-row">
+                <span>Balance</span>
+                <strong style="color:var(--warning);">&#8377; {{ "%.0f"|format(pd.balance) }}</strong>
+            </div>
+            <hr style="margin:.4rem 0;opacity:.12;">
+            <div class="psc-row">
+                <span>Pending</span>
+                <span class="badge-status {{ 'pending' if pd.pending > 0 else 'completed' }}" style="font-size:.7rem;">{{ pd.pending }}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="row g-3">
     <div class="col-lg-7">
-        <div class="card mb-3">
+        <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span><i class="bi bi-journal me-1"></i> Recent Trips</span>
                 <a href="{{ url_for('trips.list') }}" class="btn btn-sm btn-primary">View All</a>
@@ -78,7 +129,7 @@
         </div>
     </div>
     <div class="col-lg-5">
-        <div class="card mb-3">
+        <div class="card">
             <div class="card-header"><i class="bi bi-lightning-fill me-1"></i> Quick Actions</div>
             <div class="card-body">
                 <div class="d-grid gap-2">
@@ -90,35 +141,12 @@
             </div>
         </div>
         {% if total_balance > 0 %}
-        <div class="card mb-3" style="border-left: 4px solid var(--warning);">
+        <div class="card" style="border-left: 4px solid var(--warning);">
             <div class="card-body d-flex align-items-center gap-3 py-3">
                 <div style="font-size:1.8rem;color:var(--warning);"><i class="bi bi-bell"></i></div>
                 <div style="font-size:.85rem;color:var(--text-muted);">
                     <strong>{{ pending_trips }}</strong> trip(s) pending with outstanding balance of <strong>&#8377; {{ "%.2f"|format(total_balance) }}</strong>
                 </div>
-            </div>
-        </div>
-        {% endif %}
-        {% if plant_data %}
-        <div class="card">
-            <div class="card-header d-flex align-items-center gap-2">
-                <i class="bi bi-building"></i> Plant-wise Summary
-            </div>
-            <div class="card-body p-0" style="max-height:400px;overflow-y:auto;">
-                {% for pd in plant_data %}
-                <div class="plant-sidebar-item">
-                    <div class="d-flex justify-content-between align-items-center px-3 py-2" style="border-bottom:1px solid var(--border);">
-                        <div>
-                            <div style="font-weight:600;font-size:.82rem;">{{ pd.name }}</div>
-                            <div style="font-size:.72rem;color:var(--text-muted);">{{ pd.count }} trips · {{ pd.work_orders }} WO · {{ "%.1f"|format(pd.mines_qty) }} T</div>
-                        </div>
-                        <div class="text-end">
-                            <div style="font-size:.78rem;color:var(--primary);font-weight:600;">&#8377; {{ "%.0f"|format(pd.freight) }}</div>
-                            <div style="font-size:.72rem;color:var(--text-muted);">Bal: &#8377; {{ "%.0f"|format(pd.balance) }}</div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
             </div>
         </div>
         {% endif %}
