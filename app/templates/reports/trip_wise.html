@@ -33,6 +33,7 @@
                     <tr>
                         <th>Date</th>
                         <th>Lorry</th>
+                        <th>Plant</th>
                         <th>Transporter</th>
                         <th class="text-end">Freight</th>
                         <th class="text-end">TDS%</th>
@@ -48,6 +49,7 @@
                     <tr>
                         <td>{{ t.date }}</td>
                         <td><strong>{{ t.lorry_number }}</strong></td>
+                        <td><span class="badge-method neft">{{ t.plant.name if t.plant else '' }}</span></td>
                         <td>{{ t.transporter.name if t.transporter else '' }}</td>
                         <td class="text-end">&#8377; {{ "%.2f"|format(t.total_freight) }}</td>
                         <td class="text-end">{{ "%.2f"|format(t.tds_percent) }}%</td>
@@ -62,7 +64,7 @@
                         </td>
                     </tr>
                     {% else %}
-                    <tr><td colspan="10" class="empty-state"><div class="icon"><i class="bi bi-inbox"></i></div>No data found</td></tr>
+                    <tr><td colspan="11" class="empty-state"><div class="icon"><i class="bi bi-inbox"></i></div>No data found</td></tr>
                     {% endfor %}
                 </tbody>
             </table>

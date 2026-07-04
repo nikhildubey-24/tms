@@ -6,7 +6,7 @@
 </div>
 
 <div class="row g-4 mt-2">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <a href="{{ url_for('reports.trip_wise') }}" class="text-decoration-none">
             <div class="report-card">
                 <div class="icon"><i class="bi bi-journal-text"></i></div>
@@ -16,7 +16,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <a href="{{ url_for('reports.transporter_wise') }}" class="text-decoration-none">
             <div class="report-card">
                 <div class="icon"><i class="bi bi-people"></i></div>
@@ -26,7 +26,17 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <a href="{{ url_for('reports.plant_wise') }}" class="text-decoration-none">
+            <div class="report-card">
+                <div class="icon"><i class="bi bi-building"></i></div>
+                <h5>Plant-wise Summary</h5>
+                <p>Plant → Truck Work Order → Trip details with CSV export</p>
+                <span class="btn btn-primary btn-sm mt-2">View Report</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
         <a href="{{ url_for('reports.date_wise') }}" class="text-decoration-none">
             <div class="report-card">
                 <div class="icon"><i class="bi bi-calendar"></i></div>

@@ -36,6 +36,44 @@
     </div>
 </div>
 
+{% if plant_data %}
+<div class="row g-3 mb-4">
+    {% for pd in plant_data %}
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-building"></i> {{ pd.name }}
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Trips</span>
+                    <strong>{{ pd.count }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Freight</span>
+                    <strong style="color:var(--primary);">&#8377; {{ "%.2f"|format(pd.freight) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Paid</span>
+                    <strong style="color:var(--success);">&#8377; {{ "%.2f"|format(pd.paid) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Balance</span>
+                    <strong style="color:var(--warning);">&#8377; {{ "%.2f"|format(pd.balance) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span style="font-size:.78rem;color:var(--text-muted);">Pending</span>
+                    <span class="badge-status {{ 'pending' if pd.pending > 0 else 'completed' }}">
+                        {{ pd.pending }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="row g-3">
     <div class="col-lg-7">
         <div class="card">
@@ -45,34 +83,36 @@
             </div>
             <div class="table-wrap">
                 <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Lorry</th>
-                                <th>Transporter</th>
-                                <th>Freight</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for t in recent_trips %}
-                            <tr>
-                                <td>{{ t.date }}</td>
-                                <td><strong>{{ t.lorry_number }}</strong></td>
-                                <td>{{ t.transporter.name if t.transporter else 'N/A' }}</td>
-                                <td>&#8377; {{ "%.2f"|format(t.total_freight) }}</td>
-                                <td>
-                                    <span class="badge-status {{ 'completed' if t.status == 'Completed' else 'pending' }}">
-                                        {{ t.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr><td colspan="5" class="empty-state"><div class="icon"><i class="bi bi-inbox"></i></div>No trips yet</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Lorry</th>
+                            <th>Plant</th>
+                            <th>Transporter</th>
+                            <th>Freight</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in recent_trips %}
+                        <tr>
+                            <td>{{ t.date }}</td>
+                            <td><strong>{{ t.lorry_number }}</strong></td>
+                            <td><span class="badge-method neft">{{ t.plant.name if t.plant else 'N/A' }}</span></td>
+                            <td>{{ t.transporter.name if t.transporter else 'N/A' }}</td>
+                            <td>&#8377; {{ "%.2f"|format(t.total_freight) }}</td>
+                            <td>
+                                <span class="badge-status {{ 'completed' if t.status == 'Completed' else 'pending' }}">
+                                    {{ t.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" class="empty-state"><div class="icon"><i class="bi bi-inbox"></i></div>No trips yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <div class="col-lg-5">
@@ -82,6 +122,7 @@
                 <div class="d-grid gap-2">
                     <a href="{{ url_for('trips.add') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i> New Trip</a>
                     <a href="{{ url_for('transporters.add') }}" class="btn btn-outline-primary"><i class="bi bi-person-plus me-1"></i> New Transporter</a>
+                    <a href="{{ url_for('plants.add') }}" class="btn btn-outline-primary"><i class="bi bi-building-plus me-1"></i> New Plant</a>
                     <a href="{{ url_for('reports.index') }}" class="btn btn-outline-primary"><i class="bi bi-bar-chart me-1"></i> View Reports</a>
                 </div>
             </div>

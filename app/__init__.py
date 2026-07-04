@@ -30,6 +30,7 @@ def create_app():
     from app.routes.expenses import expenses_bp
     from app.routes.payments import payments_bp
     from app.routes.reports import reports_bp
+    from app.routes.plants import plants_bp
     from app.routes.main import main_bp
 
     app.register_blueprint(auth_bp)
@@ -38,6 +39,7 @@ def create_app():
     app.register_blueprint(expenses_bp)
     app.register_blueprint(payments_bp)
     app.register_blueprint(reports_bp)
+    app.register_blueprint(plants_bp)
     app.register_blueprint(main_bp)
 
     @app.context_processor

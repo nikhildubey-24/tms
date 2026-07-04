@@ -124,6 +124,9 @@ body::before {
 .nav-link:hover { opacity: 1; background: rgba(255, 255, 255, 0.08); }
 .nav-link.active { opacity: 1; background: rgba(255, 255, 255, 0.1); }
 
+.navbar-toggler-icon {
+    filter: invert(1) brightness(2);
+}
 .theme-toggle {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid var(--glass-border);

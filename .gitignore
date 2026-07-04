@@ -1,0 +1,9 @@
+.env
+app/tms.db
+*.pyc
+__pycache__/
+.DS_Store
+.vercel
+*.egg-info/
+dist/
+build/

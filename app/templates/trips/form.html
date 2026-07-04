@@ -6,26 +6,35 @@
 </div>
 
 <div class="row justify-content-center">
-    <div class="col-lg-8">
+    <div class="col-lg-10">
         <div class="card">
             <div class="card-header"><i class="bi bi-journal me-1"></i> Trip Information</div>
             <div class="card-body">
                 <form method="POST">
                     <div class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Date <span class="text-danger">*</span></label>
                             <input type="date" name="date" class="form-control" value="{{ trip.date if trip else '' }}" required>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Lorry Number <span class="text-danger">*</span></label>
                             <input type="text" name="lorry_number" class="form-control" value="{{ trip.lorry_number if trip else '' }}" placeholder="e.g. KA01AB1234" required>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Transporter <span class="text-danger">*</span></label>
                             <select name="transporter_id" class="form-select" required>
                                 <option value="">Select Transporter</option>
                                 {% for tr in transporters %}
                                 <option value="{{ tr.id }}" {% if trip and trip.transporter_id == tr.id %}selected{% endif %}>{{ tr.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Plant <span class="text-danger">*</span></label>
+                            <select name="plant_id" class="form-select" required>
+                                <option value="">Select Plant</option>
+                                {% for p in plants %}
+                                <option value="{{ p.id }}" {% if trip and trip.plant_id == p.id %}selected{% endif %}>{{ p.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>

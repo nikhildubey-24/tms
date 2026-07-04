@@ -49,12 +49,14 @@ class Trip(db.Model):
         db.UniqueConstraint("date", "lorry_number", name="uq_trip_date_lorry"),
         db.Index("ix_trip_date", "date"),
         db.Index("ix_trip_transporter", "transporter_id"),
+        db.Index("ix_trip_plant", "plant_id"),
     )
 
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False, index=True)
     lorry_number = db.Column(db.String(50), nullable=False)
     transporter_id = db.Column(db.Integer, db.ForeignKey("transporters.id"), nullable=False, index=True)
+    plant_id = db.Column(db.Integer, db.ForeignKey("plants.id"), nullable=True, index=True)
     total_freight = db.Column(db.Numeric(12, 2), nullable=False, default=0.00)
     tds_percent = db.Column(db.Numeric(5, 2), nullable=False, default=1.00)
     tds_amount = db.Column(db.Numeric(12, 2), nullable=False, default=0.00)
@@ -86,6 +88,8 @@ class Trip(db.Model):
             "lorry_number": self.lorry_number,
             "transporter_id": self.transporter_id,
             "transporter_name": self.transporter.name if self.transporter else "",
+            "plant_id": self.plant_id,
+            "plant_name": self.plant.name if self.plant else "",
             "total_freight": float(self.total_freight),
             "tds_percent": float(self.tds_percent),
             "tds_amount": float(self.tds_amount),
@@ -138,6 +142,23 @@ class Payment(db.Model):
             "account_number": self.account_number,
             "ifsc_code": self.ifsc_code,
             "reference_number": self.reference_number,
+        }
+
+
+class Plant(db.Model):
+    __tablename__ = "plants"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False, unique=True, index=True)
+    location = db.Column(db.String(200), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    trips = db.relationship("Trip", backref="plant", lazy=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "location": self.location,
         }
 
 

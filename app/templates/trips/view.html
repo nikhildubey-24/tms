@@ -19,6 +19,7 @@
                 <table class="detail-table w-100">
                     <tr><th>Date</th><td>{{ trip.date }}</td></tr>
                     <tr><th>Lorry Number</th><td><strong>{{ trip.lorry_number }}</strong></td></tr>
+                    <tr><th>Plant</th><td><strong>{{ trip.plant.name if trip.plant else 'N/A' }}</strong></td></tr>
                     <tr><th>Transporter</th><td><strong>{{ trip.transporter.name if trip.transporter else 'N/A' }}</strong></td></tr>
                     <tr><th>Status</th>
                         <td>
