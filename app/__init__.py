@@ -31,6 +31,8 @@ def create_app():
     from app.routes.payments import payments_bp
     from app.routes.reports import reports_bp
     from app.routes.plants import plants_bp
+    from app.routes.work_orders import work_orders_bp
+    from app.routes.mines import mines_bp
     from app.routes.main import main_bp
 
     app.register_blueprint(auth_bp)
@@ -40,6 +42,8 @@ def create_app():
     app.register_blueprint(payments_bp)
     app.register_blueprint(reports_bp)
     app.register_blueprint(plants_bp)
+    app.register_blueprint(work_orders_bp)
+    app.register_blueprint(mines_bp)
     app.register_blueprint(main_bp)
 
     @app.context_processor
@@ -55,5 +59,12 @@ def create_app():
             db.create_all()
         except Exception:
             pass
+
+        from app.config import Config
+        if not User.query.filter_by(username=Config.ADMIN_USERNAME).first():
+            user = User(username=Config.ADMIN_USERNAME, is_admin=True)
+            user.set_password(Config.ADMIN_PASSWORD)
+            db.session.add(user)
+            db.session.commit()
 
     return app

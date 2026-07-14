@@ -19,8 +19,8 @@
                 <table class="detail-table w-100">
                     <tr><th>Date</th><td>{{ trip.date }}</td></tr>
                     <tr><th>Truck Number</th><td><strong>{{ trip.lorry_number }}</strong></td></tr>
-                    <tr><th>Work Order</th><td><code>{{ trip.work_order_number or '-' }}</code></td></tr>
-                    <tr><th>Mines Name</th><td><strong>{{ trip.mines_name or '-' }}</strong></td></tr>
+                    <tr><th>Work Order</th><td><code>{{ trip.work_order.name if trip.work_order else '-' }}</code></td></tr>
+                    <tr><th>Mines Name</th><td><strong>{{ trip.mine.name if trip.mine else '-' }}</strong></td></tr>
                     <tr><th>Mines Qty</th><td>{{ trip.mines_qty or '-' }} Tonnes</td></tr>
                     <tr><th>Plant</th><td><strong>{{ trip.plant.name if trip.plant else 'N/A' }}</strong></td></tr>
                     <tr><th>Transporter</th><td><strong>{{ trip.transporter.name if trip.transporter else 'N/A' }}</strong></td></tr>

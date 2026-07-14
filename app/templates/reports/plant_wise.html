@@ -82,8 +82,8 @@
                             {% for t in l.trips %}
                             <tr>
                                 <td>{{ t.date }}</td>
-                                <td><code>{{ t.work_order_number or '-' }}</code></td>
-                                <td>{{ t.mines_name or '-' }}</td>
+                                <td><code>{{ t.work_order.name if t.work_order else '-' }}</code></td>
+                                <td>{{ t.mine.name if t.mine else '-' }}</td>
                                 <td>{{ t.mines_qty or '-' }}</td>
                                 <td>{{ t.transporter.name if t.transporter else '' }}</td>
                                 <td class="text-end">&#8377; {{ "%.2f"|format(t.total_freight) }}</td>

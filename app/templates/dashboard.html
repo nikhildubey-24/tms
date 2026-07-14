@@ -40,7 +40,7 @@
 <div class="section-title"><i class="bi bi-building"></i> Plant-wise Summary</div>
 <div class="plant-scroll-wrap mb-4">
     {% for pd in plant_data %}
-    <div class="plant-scroll-card">
+    <a href="{{ url_for('work_orders.list', plant_id=pd.id) }}" class="plant-scroll-card" style="text-decoration:none;color:inherit;cursor:pointer;">
         <div class="psc-header">{{ pd.name }}</div>
         <div class="psc-body">
             <div class="psc-row">
@@ -82,7 +82,7 @@
                 <span class="badge-status {{ 'pending' if pd.pending > 0 else 'completed' }}" style="font-size:.7rem;">{{ pd.pending }}</span>
             </div>
         </div>
-    </div>
+    </a>
     {% endfor %}
 </div>
 {% endif %}
@@ -111,8 +111,8 @@
                         <tr>
                             <td>{{ t.date }}</td>
                             <td><strong>{{ t.lorry_number }}</strong></td>
-                            <td><code>{{ t.work_order_number or '-' }}</code></td>
-                            <td>{{ t.mines_name or '-' }}</td>
+                            <td><code>{{ t.work_order.name if t.work_order else '-' }}</code></td>
+                            <td>{{ t.mine.name if t.mine else '-' }}</td>
                             <td>&#8377; {{ "%.2f"|format(t.total_freight) }}</td>
                             <td>
                                 <span class="badge-status {{ 'completed' if t.status == 'Completed' else 'pending' }}">

@@ -10,13 +10,15 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
         "pool_recycle": 300,
-        "connect_args": {
+    }
+
+    if not SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
+        SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
             "sslmode": "require",
             "connect_timeout": 10,
             "keepalives": 1,
             "keepalives_idle": 30,
-        },
-    }
+        }
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
     ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
     ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")

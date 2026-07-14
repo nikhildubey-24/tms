@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h3><i class="bi bi-file-earmark-text me-1"></i> Work Orders</h3>
+        <div class="subtitle">{% if plant_id %}Filtered by: <strong>{{ plants|selectattr('id', 'equalto', plant_id|int)|map(attribute='name')|first }}</strong>{% else %}All Plants{% endif %}</div>
+    </div>
+    <a href="{{ url_for('work_orders.add') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i> Add Work Order</a>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="GET" class="d-flex gap-2 align-items-center">
+            <label class="form-label mb-0 me-2"><strong>Filter by Plant:</strong></label>
+            <select name="plant_id" class="form-select form-select-sm" style="width:auto;" onchange="this.form.submit()">
+                <option value="">All Plants</option>
+                {% for p in plants %}
+                <option value="{{ p.id }}" {% if plant_id == p.id|string %}selected{% endif %}>{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+
+{% for group in plant_groups %}
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-building me-1"></i> <strong>{{ group.plant.name }}</strong></span>
+        <span class="badge bg-secondary">{{ group.work_orders|length }} Work Order(s)</span>
+    </div>
+
+    {% for wo in group.work_orders %}
+    <div class="border-bottom px-3 py-2" style="border-color: var(--border) !important;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong style="font-size:.95rem;">{{ wo.name }}</strong>
+                <span class="text-muted ms-2" style="font-size:.8rem;">{{ wo.trips|length }} trip(s)</span>
+            </div>
+            <div class="action-group">
+                <a href="{{ url_for('work_orders.edit', id=wo.id) }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                <form method="POST" action="{{ url_for('work_orders.delete', id=wo.id) }}" style="display:inline;" onsubmit="return confirm('Delete this work order?')">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                </form>
+            </div>
+        </div>
+
+        {% if wo.trips %}
+        <div class="table-wrap mt-2" style="margin-bottom:0;">
+            <table class="table table-sm mb-0" style="font-size:.82rem;">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Truck</th>
+                        <th>Mine</th>
+                        <th>Mine Qty</th>
+                        <th class="text-end">Freight</th>
+                        <th class="text-end">TDS</th>
+                        <th class="text-end">Paid</th>
+                        <th class="text-end">Balance</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in wo.trips|sort(attribute='date', reverse=true) %}
+                    <tr>
+                        <td>{{ t.date }}</td>
+                        <td><strong>{{ t.lorry_number }}</strong></td>
+                        <td>{{ t.mine.name if t.mine else '-' }}</td>
+                        <td>{{ "%.1f"|format(t.mines_qty) if t.mines_qty else '-' }} T</td>
+                        <td class="text-end">&#8377; {{ "%.0f"|format(t.total_freight) }}</td>
+                        <td class="text-end">&#8377; {{ "%.0f"|format(t.tds_amount) }}</td>
+                        <td class="text-end">&#8377; {{ "%.0f"|format(t.total_paid) }}</td>
+                        <td class="text-end" style="color:var({% if t.balance > 0 %}--warning{% else %}--success{% endif %});">
+                            &#8377; {{ "%.0f"|format(t.balance) }}
+                        </td>
+                        <td>
+                            <span class="badge-status {{ 'completed' if t.status == 'Completed' else 'pending' }}" style="font-size:.7rem;">
+                                {{ t.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-muted py-2" style="font-size:.82rem;">No trips linked to this work order yet.</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body empty-state">
+        <div class="icon"><i class="bi bi-file-earmark-text"></i></div>
+        No work orders found. Add some first.
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

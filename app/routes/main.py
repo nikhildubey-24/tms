@@ -22,6 +22,7 @@ def dashboard():
     for p in plants:
         pt = Trip.query.filter_by(plant_id=p.id).all()
         plant_data.append({
+            "id": p.id,
             "name": p.name,
             "count": len(pt),
             "freight": sum(float(x.total_freight) for x in pt),
@@ -31,7 +32,7 @@ def dashboard():
             "balance": sum(float(x.balance) for x in pt),
             "pending": sum(1 for x in pt if x.status == "Pending"),
             "completed": sum(1 for x in pt if x.status == "Completed"),
-            "work_orders": sum(1 for x in pt if x.work_order_number),
+            "work_orders": sum(1 for x in pt if x.work_order_id),
             "mines_qty": sum(float(x.mines_qty or 0) for x in pt),
         })
 

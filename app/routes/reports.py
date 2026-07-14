@@ -32,8 +32,8 @@ def trip_wise():
             [
                 t.date,
                 t.lorry_number,
-                t.work_order_number or "",
-                t.mines_name or "",
+                t.work_order.name if t.work_order else "",
+                t.mine.name if t.mine else "",
                 float(t.mines_qty) if t.mines_qty else "",
                 t.plant.name if t.plant else "",
                 t.transporter.name if t.transporter else "",
@@ -199,8 +199,8 @@ def plant_wise():
                     rows.append([
                         h["plant"].name,
                         l["lorry"],
-                        t.work_order_number or "",
-                        t.mines_name or "",
+                        t.work_order.name if t.work_order else "",
+                        t.mine.name if t.mine else "",
                         float(t.mines_qty) if t.mines_qty else "",
                         t.date,
                         t.transporter.name if t.transporter else "",

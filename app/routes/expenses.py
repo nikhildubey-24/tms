@@ -18,6 +18,14 @@ def add(trip_id):
             if not description:
                 flash("Description is required", "danger")
                 return render_template("expenses/form.html", trip=trip, expense=None)
+
+            total_freight = request.form.get("total_freight", "").strip()
+            tds_percent = request.form.get("tds_percent", "").strip()
+            if total_freight:
+                trip.total_freight = float(total_freight)
+            if tds_percent:
+                trip.tds_percent = float(tds_percent)
+
             expense = Expense(trip_id=trip.id, description=description, amount=amount)
             db.session.add(expense)
             trip.recalculate()
@@ -45,6 +53,14 @@ def edit(id):
             if not description:
                 flash("Description is required", "danger")
                 return render_template("expenses/form.html", trip=trip, expense=expense)
+
+            total_freight = request.form.get("total_freight", "").strip()
+            tds_percent = request.form.get("tds_percent", "").strip()
+            if total_freight:
+                trip.total_freight = float(total_freight)
+            if tds_percent:
+                trip.tds_percent = float(tds_percent)
+
             expense.description = description
             expense.amount = amount
             trip.recalculate()

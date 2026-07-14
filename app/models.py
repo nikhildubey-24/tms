@@ -63,8 +63,9 @@ class Trip(db.Model):
     total_expense = db.Column(db.Numeric(12, 2), nullable=False, default=0.00)
     total_paid = db.Column(db.Numeric(12, 2), nullable=False, default=0.00)
     balance = db.Column(db.Numeric(12, 2), nullable=False, default=0.00)
-    work_order_number = db.Column(db.String(100), nullable=True, index=True)
+    work_order_id = db.Column(db.Integer, db.ForeignKey("work_orders.id"), nullable=True, index=True)
     mines_name = db.Column(db.String(200), nullable=True)
+    mine_id = db.Column(db.Integer, db.ForeignKey("mines.id"), nullable=True, index=True)
     mines_qty = db.Column(db.Numeric(12, 2), nullable=True, default=0.00)
     status = db.Column(db.String(20), nullable=False, default="Pending")
     remarks = db.Column(db.Text, nullable=True)
@@ -99,8 +100,10 @@ class Trip(db.Model):
             "total_expense": float(self.total_expense),
             "total_paid": float(self.total_paid),
             "balance": float(self.balance),
-            "work_order_number": self.work_order_number,
-            "mines_name": self.mines_name,
+            "work_order_id": self.work_order_id,
+            "work_order_name": self.work_order.name if self.work_order else "",
+            "mine_id": self.mine_id,
+            "mine_name": self.mine.name if self.mine else "",
             "mines_qty": float(self.mines_qty) if self.mines_qty else 0,
             "status": self.status,
             "remarks": self.remarks,
@@ -165,6 +168,43 @@ class Plant(db.Model):
             "id": self.id,
             "name": self.name,
             "location": self.location,
+        }
+
+
+class WorkOrder(db.Model):
+    __tablename__ = "work_orders"
+    __table_args__ = (
+        db.UniqueConstraint("name", "plant_id", name="uq_work_order_name_plant"),
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False, index=True)
+    plant_id = db.Column(db.Integer, db.ForeignKey("plants.id"), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    plant = db.relationship("Plant", backref="work_orders")
+    trips = db.relationship("Trip", backref="work_order", lazy=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "plant_id": self.plant_id,
+            "plant_name": self.plant.name if self.plant else "",
+        }
+
+
+class Mine(db.Model):
+    __tablename__ = "mines"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False, unique=True, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    trips = db.relationship("Trip", backref="mine", lazy=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
         }
 
 

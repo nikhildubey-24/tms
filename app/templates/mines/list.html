@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h3><i class="bi bi-geo-alt me-1"></i> Mines</h3>
+        <div class="subtitle">Manage mine names</div>
+    </div>
+    <a href="{{ url_for('mines.add') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i> Add Mine</a>
+</div>
+
+<div class="table-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Mine Name</th>
+                <th class="no-print text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in mines %}
+            <tr>
+                <td class="text-muted">{{ m.id }}</td>
+                <td><strong>{{ m.name }}</strong></td>
+                <td class="no-print text-end">
+                    <div class="action-group justify-content-end">
+                        <a href="{{ url_for('mines.edit', id=m.id) }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                        <form method="POST" action="{{ url_for('mines.delete', id=m.id) }}" style="display:inline;" onsubmit="return confirm('Delete this mine? Related trips will lose mine reference.')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" class="empty-state"><div class="icon"><i class="bi bi-geo-alt"></i></div>No mines added yet</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

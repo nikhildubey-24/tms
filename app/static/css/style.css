@@ -401,7 +401,7 @@ body::before {
     border-radius: var(--radius);
     overflow: hidden;
 }
-.plant-scroll-card:hover { box-shadow: var(--shadow-md); }
+.plant-scroll-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); transition: all 0.2s ease; }
 .psc-header {
     padding: .6rem .75rem;
     font-weight: 700;

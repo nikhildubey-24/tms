@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+    <h3><i class="bi bi-file-earmark-text me-1"></i> Work Orders by Plant</h3>
+    <div class="subtitle">View work orders organized by plant</div>
+</div>
+
+{% for group in plant_groups %}
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-building me-1"></i> <strong>{{ group.plant.name }}</strong></span>
+        <span class="badge bg-secondary">{{ group.work_orders|length }} Work Orders</span>
+    </div>
+    <div class="table-wrap mb-0">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Work Order Name</th>
+                    <th>Trips Using This</th>
+                    <th class="no-print text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for wo in group.work_orders %}
+                <tr>
+                    <td class="text-muted">{{ wo.id }}</td>
+                    <td><strong>{{ wo.name }}</strong></td>
+                    <td>{{ wo.trips|length }} trip(s)</td>
+                    <td class="no-print text-end">
+                        <div class="action-group justify-content-end">
+                            <a href="{{ url_for('work_orders.edit', id=wo.id) }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <form method="POST" action="{{ url_for('work_orders.delete', id=wo.id) }}" style="display:inline;" onsubmit="return confirm('Delete this work order?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="empty-state"><div class="icon"><i class="bi bi-file-earmark-text"></i></div>No work orders for this plant</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body empty-state"><div class="icon"><i class="bi bi-file-earmark-text"></i></div>No work orders found. Add some from Work Orders page.</div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required
 from app import db
-from app.models import Trip, Transporter, Plant
+from app.models import Trip, Transporter, Plant, WorkOrder, Mine
 from app.utils import validate_positive, log_audit
 
 trips_bp = Blueprint("trips", __name__, url_prefix="/trips")
@@ -48,34 +48,38 @@ def list():
 def add():
     transporters = Transporter.query.order_by(Transporter.name).all()
     plants = Plant.query.order_by(Plant.name).all()
+    work_orders = WorkOrder.query.order_by(WorkOrder.name).all()
+    mines = Mine.query.order_by(Mine.name).all()
     if request.method == "POST":
         try:
             date_str = request.form.get("date", "").strip()
             lorry_number = request.form.get("lorry_number", "").strip()
             transporter_id = request.form.get("transporter_id")
             plant_id = request.form.get("plant_id")
-            total_freight = validate_positive(request.form.get("total_freight", 0), "Freight")
-            tds_percent = validate_positive(request.form.get("tds_percent", 1), "TDS percent")
+            total_freight = 0
+            tds_percent = 1
 
             if not date_str or not lorry_number or not transporter_id:
                 flash("Date, Lorry Number, and Transporter are required", "danger")
-                return render_template("trips/form.html", trip=None, transporters=transporters, plants=plants)
+                return render_template("trips/form.html", trip=None, transporters=transporters, plants=plants, work_orders=work_orders, mines=mines)
 
             trip_date = datetime.strptime(date_str, "%Y-%m-%d").date()
 
             existing = Trip.query.filter_by(date=trip_date, lorry_number=lorry_number).first()
             if existing:
                 flash("A trip already exists for this lorry on this date", "danger")
-                return render_template("trips/form.html", trip=None, transporters=transporters, plants=plants)
+                return render_template("trips/form.html", trip=None, transporters=transporters, plants=plants, work_orders=work_orders, mines=mines)
 
             mines_qty = request.form.get("mines_qty", "").strip()
+            work_order_id = request.form.get("work_order_id")
+            mine_id = request.form.get("mine_id")
             trip = Trip(
                 date=trip_date,
                 lorry_number=lorry_number,
                 transporter_id=int(transporter_id),
                 plant_id=int(plant_id) if plant_id else None,
-                work_order_number=request.form.get("work_order_number", "").strip(),
-                mines_name=request.form.get("mines_name", "").strip(),
+                work_order_id=int(work_order_id) if work_order_id else None,
+                mine_id=int(mine_id) if mine_id else None,
                 mines_qty=float(mines_qty) if mines_qty else None,
                 total_freight=total_freight,
                 tds_percent=tds_percent,
@@ -92,7 +96,7 @@ def add():
         except Exception as e:
             db.session.rollback()
             flash(f"Error: {str(e)}", "danger")
-    return render_template("trips/form.html", trip=None, transporters=transporters, plants=plants)
+    return render_template("trips/form.html", trip=None, transporters=transporters, plants=plants, work_orders=work_orders, mines=mines)
 
 
 @trips_bp.route("/edit/<int:id>", methods=["GET", "POST"])
@@ -101,18 +105,17 @@ def edit(id):
     trip = Trip.query.get_or_404(id)
     transporters = Transporter.query.order_by(Transporter.name).all()
     plants = Plant.query.order_by(Plant.name).all()
+    work_orders = WorkOrder.query.order_by(WorkOrder.name).all()
+    mines = Mine.query.order_by(Mine.name).all()
     if request.method == "POST":
         try:
             date_str = request.form.get("date", "").strip()
             lorry_number = request.form.get("lorry_number", "").strip()
             transporter_id = request.form.get("transporter_id")
             plant_id = request.form.get("plant_id")
-            total_freight = validate_positive(request.form.get("total_freight", 0), "Freight")
-            tds_percent = validate_positive(request.form.get("tds_percent", 1), "TDS percent")
-
             if not date_str or not lorry_number or not transporter_id:
                 flash("Date, Lorry Number, and Transporter are required", "danger")
-                return render_template("trips/form.html", trip=trip, transporters=transporters, plants=plants)
+                return render_template("trips/form.html", trip=trip, transporters=transporters, plants=plants, work_orders=work_orders, mines=mines)
 
             trip_date = datetime.strptime(date_str, "%Y-%m-%d").date()
 
@@ -121,18 +124,18 @@ def edit(id):
             ).first()
             if existing:
                 flash("A trip already exists for this lorry on this date", "danger")
-                return render_template("trips/form.html", trip=trip, transporters=transporters, plants=plants)
+                return render_template("trips/form.html", trip=trip, transporters=transporters, plants=plants, work_orders=work_orders, mines=mines)
 
             mines_qty = request.form.get("mines_qty", "").strip()
+            work_order_id = request.form.get("work_order_id")
+            mine_id = request.form.get("mine_id")
             trip.date = trip_date
             trip.lorry_number = lorry_number
             trip.transporter_id = int(transporter_id)
             trip.plant_id = int(plant_id) if plant_id else None
-            trip.work_order_number = request.form.get("work_order_number", "").strip()
-            trip.mines_name = request.form.get("mines_name", "").strip()
+            trip.work_order_id = int(work_order_id) if work_order_id else None
+            trip.mine_id = int(mine_id) if mine_id else None
             trip.mines_qty = float(mines_qty) if mines_qty else None
-            trip.total_freight = total_freight
-            trip.tds_percent = tds_percent
             trip.remarks = request.form.get("remarks", "").strip()
             trip.recalculate()
             db.session.commit()
@@ -144,7 +147,7 @@ def edit(id):
         except Exception as e:
             db.session.rollback()
             flash(f"Error: {str(e)}", "danger")
-    return render_template("trips/form.html", trip=trip, transporters=transporters, plants=plants)
+    return render_template("trips/form.html", trip=trip, transporters=transporters, plants=plants, work_orders=work_orders, mines=mines)
 
 
 @trips_bp.route("/delete/<int:id>", methods=["POST"])
